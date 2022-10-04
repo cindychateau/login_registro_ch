@@ -60,3 +60,29 @@ class User:
         query = "INSERT INTO users (first_name, last_name, email, password) VALUES (%(first_name)s, %(last_name)s, %(email)s, %(password)s)"
         result = connectToMySQL('login_registro').query_db(query, formulario)
         return result #El ID del nuevo registro que se realizó
+    
+    @classmethod
+    def get_by_email(cls, formulario):
+        #formulario = {email: elena@codingdojo.com, password: 123}
+        query = "SELECT * FROM users WHERE email = %(email)s"
+        result = connectToMySQL('login_registro').query_db(query, formulario) #SELECT me regresa una lista
+        if len(result) < 1: #Significa que mi lista está vacía, entonces NO existe ese email
+            return False
+        else:
+            #Me regresa una lista con UN registro, correspondiente al usuario de ese email
+            #result = [
+            #    {id: 1, first_name: elena, last_name:de troya.....} -> POSICION 0
+            #]
+            user = cls(result[0]) #User( {id: 1, first_name: elena, last_name:de troya.....})
+            return user
+    
+    @classmethod
+    def get_by_id(cls, formulario):
+        #formulario = {id: 1}
+        query = "SELECT * FROM users WHERE id = %(id)s"
+        result = connectToMySQL('login_registro').query_db(query, formulario)
+        #result = [
+        #    {id: 1, first_name: elena, last_name:de troya.....} -> POSICION 0
+        #]
+        user = cls(result[0]) #Creamos una instancia de User
+        return user
